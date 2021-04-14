@@ -30,7 +30,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildJob
-    pool:  # Update this if using dedicated build pool
+    pool:  ${{ agentPoolName }} # Update this if using dedicated build pool
       vmImage: 'windows-latest'
     workspace:
       clean: all
