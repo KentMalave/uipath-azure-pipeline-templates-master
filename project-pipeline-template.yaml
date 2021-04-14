@@ -23,6 +23,11 @@ parameters:
 - name: 'environments'
   default: ''
   type: string
+# The Agent Pool specifies which machines use to build and deploy.
+# the default is 'Default'
+- name: 'agentPoolName'
+  default: 'Default'
+  type: string
   
 # This pipeline is broken into stages for the approval functionality. Stages are ran independantly, which means the pipeline can pause until the approval is received. 
 stages:
@@ -30,7 +35,7 @@ stages:
 - stage: Build
   jobs:
   - job: BuildJob
-    pool:  ${{ agentPoolName }} # Update this if using dedicated build pool
+    pool: ${{ agentPoolName }} # Update this if using dedicated build pool
       vmImage: 'windows-latest'
     workspace:
       clean: all
