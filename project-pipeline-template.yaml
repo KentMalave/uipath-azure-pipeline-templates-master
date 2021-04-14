@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: BuildJob
     pool: ${{ parameters.agentPoolName }}
-      vmImage: ${{ parameters.vmImageName }}
+#      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     steps:
@@ -66,7 +66,7 @@ stages:
   jobs:
   - job: DeployToTestJob
     pool: ${{ parameters.agentPoolName }}
-      vmImage: ${{ parameters.vmImageName }}
+#      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     steps:
@@ -87,7 +87,7 @@ stages:
   jobs:
   - deployment: DeployToProdJob
     pool: ${{ parameters.agentPoolName }}
-      vmImage: ${{ parameters.vmImageName }}
+#      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     environment: Production  # Update this to your Prod Enviornment in DevOps. This is where you configure the approval process.
