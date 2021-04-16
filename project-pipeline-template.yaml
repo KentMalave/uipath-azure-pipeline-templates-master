@@ -55,7 +55,7 @@ stages:
         orchestratorConnection: Orchestrator-Dev-Default  # Update this to a service connection for your Orchestrator.
         outputPath: '$(Build.ArtifactStagingDirectory)\Output'
     # Set proxy before trying to drop code
-    - script: 'config.cmd --proxyurl http://127.0.0.1:8888 --proxyusername "AGENCY\20915C" --proxypassword "Oklahoma@2028"'
+    - script: 'pwd;.\config.cmd --proxyurl http://127.0.0.1:8888 --proxyusername "AGENCY\20915C" --proxypassword "Oklahoma@2028"'
       displayName: Configure proxy server settings
     # Publish the nuget package for later stages.
     - publish: $(Build.ArtifactStagingDirectory)\Output
