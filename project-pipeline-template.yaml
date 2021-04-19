@@ -26,7 +26,7 @@ parameters:
 # The Agent Pool specifies which machines use to build and deploy.
 # the default is 'Default'
 - name: 'agentPoolName'
-  default: 'Default'
+  default: 'UiPath CICD'
   type: string
 # the default is 'Default'
 - name: 'vmImageName'
@@ -47,7 +47,7 @@ stages:
     steps:
     - script: 'echo project path: ${{ parameters.projectPath }}, folder name: ${{ parameters.folderName }}, versioning strategy: ${{ parameters.versioningStrategy }}, environments: ${{ parameters.environments }}'
       displayName: Log parameters
-    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+#    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
     - task: UiPathPack@2
       inputs:
         versionType: ${{ parameters.versioningStrategy }}
@@ -72,7 +72,7 @@ stages:
     steps:
     - download: current
       artifact: drop
-    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+#    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
     - task: UiPathDeploy@2
       inputs:
         orchestratorConnection: Orchestrator-Test-Default
@@ -97,7 +97,7 @@ stages:
           steps:
           - download: current
             artifact: drop
-          - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+#          - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
           - task: UiPathDeploy@2
             inputs:
               orchestratorConnection: Orchestrator-Prod-Default  # Update this to a service connection for your Prod Orchestrator.
