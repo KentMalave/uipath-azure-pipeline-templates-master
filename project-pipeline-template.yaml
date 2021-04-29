@@ -3,7 +3,7 @@
 # Approvals are not defined here, but rather tied to the environment. 
 #
 # As is, this pipeline template will deploy to the Test environment on commits to any release* branch without approvals,
-# and will deploy to the Prod environment on commits to the master branch, after approval.
+# and will deploy to the Prod environment on commits to the main branch, after approval.
 
 parameters:
 # The full path to the folder containing the project.json file for this pipeline
@@ -80,10 +80,10 @@ stages:
         folderName: ${{ parameters.folderName }}
         environments: ${{ parameters.environments }}
 
-# Deploy to the Prod environment on commits to the master branch.
+# Deploy to the Prod environment on commits to the main branch.
 # Will require approvals as defined by the environment in Azure Devops.
 - stage: DeployToProd
-  condition: and(succeeded('Build'), eq(variables['Build.SourceBranchName'], 'master'))
+  condition: and(succeeded('Build'), eq(variables['Build.SourceBranchName'], 'main'))
   jobs:
   - deployment: DeployToProdJob
     pool: ${{ parameters.agentPoolName }}
