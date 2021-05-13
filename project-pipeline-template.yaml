@@ -26,7 +26,7 @@ parameters:
 # The Agent Pool specifies which machines use to build and deploy.
 # the default is 'Default'
 - name: 'agentPoolName'
-  default: 'UiPath CICD'
+  default: 'Default'
   type: string
 # the default is 'Default'
 - name: 'vmImageName'
@@ -40,14 +40,17 @@ stages:
 - stage: Build
   jobs:
   - job: BuildJob
-    pool: ${{ parameters.agentPoolName }}
-#      vmImage: ${{ parameters.vmImageName }}
+    pool: # Update this if using dedicated build pool
+      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     steps:
     - script: 'echo project path: ${{ parameters.projectPath }}, folder name: ${{ parameters.folderName }}, versioning strategy: ${{ parameters.versioningStrategy }}, environments: ${{ parameters.environments }}'
       displayName: Log parameters
-#    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+    - task: BatchScript@1
+      inputs:
+        filename: modify-proxy-in-registry.bat
+    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
     - task: UiPathPack@2
       inputs:
         versionType: ${{ parameters.versioningStrategy }}
@@ -65,14 +68,17 @@ stages:
   condition: and(succeeded('Build'), startsWith(variables['Build.SourceBranchName'], 'release'))  # Only run if the packaging succeeded and we are on a release* branch.
   jobs:
   - job: DeployToTestJob
-    pool: ${{ parameters.agentPoolName }}
-#      vmImage: ${{ parameters.vmImageName }}
+    pool: # Update this if using dedicated build pool
+      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     steps:
+    - task: BatchScript@1
+      inputs:
+        filename: modify-proxy-in-registry.bat
     - download: current
       artifact: drop
-#    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+    - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
     - task: UiPathDeploy@2
       inputs:
         orchestratorConnection: Orchestrator-Test-Default
@@ -86,8 +92,8 @@ stages:
   condition: and(succeeded('Build'), eq(variables['Build.SourceBranchName'], 'main'))
   jobs:
   - deployment: DeployToProdJob
-    pool: ${{ parameters.agentPoolName }}
-#      vmImage: ${{ parameters.vmImageName }}
+    pool: # Update this if using dedicated build pool
+      vmImage: ${{ parameters.vmImageName }}
     workspace:
       clean: all
     environment: Production  # Update this to your Prod Enviornment in DevOps. This is where you configure the approval process.
@@ -95,9 +101,12 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: BatchScript@1
+            inputs:
+              filename: modify-proxy-in-registry.bat
           - download: current
             artifact: drop
-#          - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
+          - task: UiPathInstallPlatform-preview@2  # This installs required exes. Not necessary if using a dedicated build machine.
           - task: UiPathDeploy@2
             inputs:
               orchestratorConnection: Orchestrator-Prod-Default  # Update this to a service connection for your Prod Orchestrator.
